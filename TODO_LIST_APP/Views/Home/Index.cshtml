@@ -1,0 +1,25 @@
+﻿@model IEnumerable<TODO_LIST_APP.Models.Note>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+
+<h1>Notes</h1>
+
+<ul>
+    @foreach (var note in Model)
+    {
+        <li>
+            <strong>@note.Title</strong> by @note.User<br />
+            @note.Content<br />
+            <small>Created at: @note.CreatedAt.ToLocalTime()</small>
+        </li>
+    }
+</ul>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <a asp-controller="Notes" asp-action="Create" class="btn btn-primary">Add Note</a>
+}
+else
+{
+    <a asp-controller="Account" asp-action="Register" class="btn btn-secondary">Register to Add Note</a>
+}
