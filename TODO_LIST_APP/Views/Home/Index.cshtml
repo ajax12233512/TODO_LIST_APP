@@ -7,11 +7,53 @@
 <ul>
     @foreach (var note in Model)
     {
-        <li>
-            <strong>@note.Title</strong> by @note.User<br />
-            @note.Content<br />
-            <small>Created at: @note.CreatedAt.ToLocalTime()</small>
-        </li>
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">@note.Title</h5>
+                <h6 class="card-subtitle text-muted mb-2">
+                    by @note.User.UserName
+                </h6>
+                <p class="card-text">@note.Content</p>
+                <p class="text-end text-muted" style="font-size: 0.85rem;">
+                    Created at: @note.CreatedAt.ToLocalTime().ToString("f")
+                </p>
+            </div>
+
+            <hr/>
+
+            <h6>Comments</h6>
+            @if (note.Comments.Any())
+            {
+                <ul class="list-unstyled">
+                    @foreach (var comment in note.Comments)
+                    {
+                        <li class="mb-2">
+                            <strong>@comment.User.UserName:</strong> @comment.Text<br />
+                            <small class="text-muted">@comment.CreatedAt.ToLocalTime().ToString("g")</small>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-muted">No comments yet.</p>
+            }
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-action="AddComment" method="post" class="mt-3">
+                    <input type="hidden" name="noteId" value="@note.Id" />
+                    <div class="mb-2">
+                        <textarea name="commentText" class="form-control" placeholder="Write a comment..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary">Post Comment</button>
+                </form>
+            }
+            else
+            {
+                <p><a href="/Identity/Account/Login">Log in</a> to comment</p>
+            }
+        </div>
     }
 </ul>
 
@@ -24,5 +66,5 @@
 }
 else
 {
-    <a asp-controller="Account" asp-action="Register" class="btn btn-secondary">Register to Add Note</a>
+    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-secondary">Register to Add Note</a>
 }
