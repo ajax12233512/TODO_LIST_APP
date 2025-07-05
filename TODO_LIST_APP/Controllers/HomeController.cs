@@ -14,9 +14,10 @@ namespace TODO_LIST_APP.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
